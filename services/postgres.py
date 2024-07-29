@@ -84,9 +84,10 @@ def delete_table(connection, schema_name, table_name):
 def fetch_data_from_pg(connection, schema_name, table_or_view_name):
     try:
         engine = create_engine('postgresql+psycopg2://', creator=lambda: connection)
-        query = f'SELECT * FROM {schema_name}.{table_or_view_name}' 
-        df = pd.read_sql(query, engine)
+        df = pd.read_sql(query, engine, params=params)
         return df
     except Exception as e:
-        print(f"Error fetching data from {schema_name}.{table_or_view_name}: {e}")
+        print(f"Error fetching data: {e}")
         return None
+
+     

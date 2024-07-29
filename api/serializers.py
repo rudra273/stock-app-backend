@@ -14,3 +14,9 @@ class StockDataSerializer(serializers.Serializer):
     Currency = serializers.CharField()
     PercentageChange = serializers.CharField()
     PriceChange = serializers.CharField() 
+
+
+
+class HistoricalStockDataSerializer(serializers.Serializer):
+    date = serializers.DateField()
+    close = serializers.FloatField()
