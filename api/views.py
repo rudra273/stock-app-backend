@@ -24,8 +24,6 @@ class StockDataAPIView(APIView):
 
 
 
-
-
 class HistoricalStockDataAPIView(APIView):
     def get(self, request, *args, **kwargs):
         symbol = request.query_params.get('symbol')
@@ -48,14 +46,14 @@ class HistoricalStockDataAPIView(APIView):
         }[period])
 
         query = f"""
-        SELECT date, close
+        SELECT "Date", "Close"
         FROM public.historical_data
-        WHERE symbol = %s AND date BETWEEN %s AND %s
-        ORDER BY date;
+        WHERE symbol = %s AND "Date" BETWEEN %s AND %s
+        ORDER BY "Date";
         """
         
         df = fetch_data_from_pg(schema_name='public', table_or_view_name='historical_data', query=query, params=(symbol, start_date, end_date))
-        
+        print(df)
         if df is not None:
             serializer = HistoricalStockDataSerializer(df.to_dict(orient='records'), many=True)
             return Response(serializer.data, status=status.HTTP_200_OK)
