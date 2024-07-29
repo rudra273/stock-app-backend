@@ -81,7 +81,7 @@ def delete_table(connection, schema_name, table_name):
         print(f'Error deleting table {schema_name}.{table_name}: {error}')
 
 @connection
-def fetch_data_from_pg(connection, schema_name, table_or_view_name):
+def fetch_data_from_pg(connection, schema_name, table_or_view_name, query, params):
     try:
         engine = create_engine('postgresql+psycopg2://', creator=lambda: connection)
         df = pd.read_sql(query, engine, params=params)
