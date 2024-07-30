@@ -90,4 +90,13 @@ def fetch_data_from_pg(connection, schema_name, table_or_view_name, query, param
         print(f"Error fetching data: {e}")
         return None
 
-     
+@connection
+def fetch_data_from_pg2(connection, schema_name, table_or_view_name, query):
+    try:
+        engine = create_engine('postgresql+psycopg2://', creator=lambda: connection)
+        df = pd.read_sql(query, engine)
+        return df
+    except Exception as e:
+        print(f"Error fetching data: {e}")
+        return None   
+
