@@ -1,5 +1,6 @@
 from rest_framework import serializers
 
+
 # class StockDataSerializer(serializers.Serializer):
 #     Symbol = serializers.CharField()
 #     Open = serializers.FloatField()
@@ -9,12 +10,14 @@ from rest_framework import serializers
 #     CurrentPrice = serializers.FloatField()
 #     PreviousClose = serializers.FloatField()
 #     FiftyTwoWeekRange = serializers.CharField()
-#     MarketCap = serializers.IntegerField(allow_null=True)
+#     MarketCap = serializers.CharField() 
 #     CompanyName = serializers.CharField()
 #     Currency = serializers.CharField()
 #     PercentageChange = serializers.CharField()
-#     PriceChange = serializers.CharField() 
+#     PriceChange = serializers.CharField()
+#     MarketState = serializers.CharField()  
 
+from rest_framework import serializers
 
 class StockDataSerializer(serializers.Serializer):
     Symbol = serializers.CharField()
@@ -24,14 +27,18 @@ class StockDataSerializer(serializers.Serializer):
     Close = serializers.FloatField()
     CurrentPrice = serializers.FloatField()
     PreviousClose = serializers.FloatField()
-    FiftyTwoWeekRange = serializers.CharField()
-    MarketCap = serializers.CharField()  # Use CharField for large numbers
+    FiftyTwoWeekLow = serializers.FloatField()
+    FiftyTwoWeekHigh = serializers.FloatField()
+    WeeklyLow = serializers.FloatField()
+    WeeklyHigh = serializers.FloatField()
+    MonthlyLow = serializers.FloatField()
+    MonthlyHigh = serializers.FloatField()
+    MarketCap = serializers.IntegerField(allow_null=True)
     CompanyName = serializers.CharField()
     Currency = serializers.CharField()
-    PercentageChange = serializers.CharField()
+    PercentageChange = serializers.FloatField()
     PriceChange = serializers.CharField()
-    MarketState = serializers.CharField()  # Add MarketState field
-
+    MarketState = serializers.CharField()
 
 
 class HistoricalStockDataSerializer(serializers.Serializer):

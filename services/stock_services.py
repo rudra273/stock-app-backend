@@ -1,3 +1,4 @@
+
 # import yfinance as yf
 # import pytz
 # from datetime import datetime
@@ -67,21 +68,11 @@
 #             'CompanyName': company_name,
 #             'Currency': currency,
 #             'PercentageChange': f"{percentage_change:.2f}%" if percentage_change != 'N/A' else 'N/A',
-#             'PriceChange': price_change
+#             'PriceChange': price_change,
+#             'MarketState': market_state
 #         })
 
 #     return data
-
-
-# # Example usage with selected 15 companies
-# # symbols = [
-# #     "MSFT", "AAPL", "GOOGL", "AMZN", "TSLA", "META", "NVDA", "ADBE", "INTC", "NFLX",
-# #     "CSCO", "AMD", "BA", "IBM", "DIS"
-# # ]
-
-# # stock_data = get_stock_data(symbols, "USA")
-# # for data in stock_data:
-# #     print(data)
 
 import yfinance as yf
 import pytz
@@ -126,17 +117,28 @@ def get_stock_data(symbols, country):
         if hist.empty:
             continue
         
-        open_price = hist['Open'].iloc[0]
-        close_price = hist['Close'].iloc[0]
-        high_price = hist['High'].iloc[0]
-        low_price = hist['Low'].iloc[0]
-        previous_close = hist['Close'].iloc[0]  # No previous close for a single day; use current close
-        fifty_two_week_range = f"{stock.info.get('fiftyTwoWeekLow', 'N/A')} - {stock.info.get('fiftyTwoWeekHigh', 'N/A')}"
-        market_cap = stock.info.get('marketCap', 'N/A')
+        open_price = round(float(hist['Open'].iloc[0]), 4)
+        close_price = round(float(hist['Close'].iloc[0]), 4)
+        high_price = round(float(hist['High'].iloc[0]), 4)
+        low_price = round(float(hist['Low'].iloc[0]), 4)
+        previous_close = round(float(hist['Close'].iloc[0]), 4)  # No previous close for a single day; use current close
+
+        fifty_two_week_low = round(float(stock.info.get('fiftyTwoWeekLow', 0)), 4)
+        fifty_two_week_high = round(float(stock.info.get('fiftyTwoWeekHigh', 0)), 4)
+
+        weekly_hist = stock.history(period='5d')
+        weekly_low = round(float(weekly_hist['Low'].min()), 4) if not weekly_hist.empty else float('nan')
+        weekly_high = round(float(weekly_hist['High'].max()), 4) if not weekly_hist.empty else float('nan')
+
+        monthly_hist = stock.history(period='1mo')
+        monthly_low = round(float(monthly_hist['Low'].min()), 4) if not monthly_hist.empty else float('nan')
+        monthly_high = round(float(monthly_hist['High'].max()), 4) if not monthly_hist.empty else float('nan')
+
+        market_cap = int(stock.info.get('marketCap', 0)) if stock.info.get('marketCap') else None
         company_name = stock.info.get('shortName', 'N/A')
         currency = stock.info.get('currency', 'N/A')
 
-        percentage_change = ((close_price - open_price) / open_price) * 100 if open_price else 'N/A'
+        percentage_change = round(float(((close_price - open_price) / open_price) * 100), 4) if open_price else float('nan')
         price_change = 'up' if close_price > open_price else 'down'
 
         data.append({
@@ -147,13 +149,31 @@ def get_stock_data(symbols, country):
             'Close': close_price,
             'CurrentPrice': close_price,
             'PreviousClose': previous_close,
-            'FiftyTwoWeekRange': fifty_two_week_range,
+            'FiftyTwoWeekLow': fifty_two_week_low,
+            'FiftyTwoWeekHigh': fifty_two_week_high,
+            'WeeklyLow': weekly_low,
+            'WeeklyHigh': weekly_high,
+            'MonthlyLow': monthly_low,
+            'MonthlyHigh': monthly_high,
             'MarketCap': market_cap,
             'CompanyName': company_name,
             'Currency': currency,
-            'PercentageChange': f"{percentage_change:.2f}%" if percentage_change != 'N/A' else 'N/A',
+            'PercentageChange': percentage_change,
             'PriceChange': price_change,
             'MarketState': market_state
         })
 
     return data
+
+
+
+# symbols = ["MSFT", "AAPL", "GOOGL", "AMZN", "TSLA", "META", "NVDA", "ADBE", "INTC", "NFLX"]
+# country = "USA"
+
+# # Call the function
+# data = get_stock_data(symbols, country)
+
+# # Print the results
+# for stock in data:
+#     print(stock)
+
