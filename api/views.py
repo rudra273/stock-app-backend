@@ -1,15 +1,28 @@
-from django.shortcuts import render
-
-# Create your views here.
-# api/views.py
-
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from services.stock_services import get_stock_data
 from api.serializers import StockDataSerializer, HistoricalStockDataSerializer
-from services.postgres import fetch_data_from_pg, fetch_data_from_pg2
+from services.postgres import fetch_data_from_pg, fetch_data_from_pg2, dump_to_postgresql
 from datetime import datetime, timedelta
+import pandas as pd
+
+# from services import ingest
+def ingest():
+    symbols = [
+        "MSFT", "AAPL", "GOOGL", "AMZN", "TSLA", "META", "NVDA", "ADBE", "INTC", "NFLX",
+        "CSCO", "AMD", "BA", "IBM", "DIS", "PYPL", "MA", "V", "WMT", "KO"
+    ]    
+    country = "USA"
+    stock_data = get_stock_data(symbols, country)
+    
+    # Create DataFrame
+    df = pd.DataFrame(stock_data)  
+    print(df) 
+    
+    
+    dump_to_postgresql(df, schema_name='public', table_name='stock_data')
+
 
 class StockDataAPIView(APIView):
     def get(self, request, *args, **kwargs):
@@ -53,7 +66,7 @@ class HistoricalStockDataAPIView(APIView):
         """
         
         df = fetch_data_from_pg(schema_name='public', table_or_view_name='historical_data', query=query, params=(symbol, start_date, end_date))
-        print(df)
+        # print(df)
         if df is not None:
             serializer = HistoricalStockDataSerializer(df.to_dict(orient='records'), many=True)
             return Response(serializer.data, status=status.HTTP_200_OK)
@@ -69,14 +82,15 @@ class StockDataDBAPIView(APIView):
         SELECT *
         FROM public.stock_data;
         """
-        
+
+        # ingest()
         # Fetch data from PostgreSQL
         df = fetch_data_from_pg2(schema_name='public', table_or_view_name='stock_data', query=query)
-        print(df)
-        
+        # print(df
         if df is not None:
             # Serialize the DataFrame
             serializer = StockDataSerializer(df.to_dict(orient='records'), many=True)
             return Response(serializer.data, status=status.HTTP_200_OK)
         else:
             return Response({"error": "No data found."}, status=status.HTTP_404_NOT_FOUND) 
+    
