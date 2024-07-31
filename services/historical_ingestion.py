@@ -1,4 +1,3 @@
-# data_ingestion/services/ingestion_services.py
 import yfinance as yf
 import pandas as pd
 from postgres import dump_to_postgresql
@@ -43,3 +42,6 @@ def fetch_and_store_historical_data():
     if historical_df is not None:
         dump_to_postgresql(historical_df, schema_name='public', table_name='historical_data')
 
+
+if __name__ == '__main__':
+    fetch_and_store_historical_data() 

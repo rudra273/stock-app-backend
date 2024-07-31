@@ -4,10 +4,8 @@ from datetime import datetime
 from postgres import dump_to_postgresql
 
 def ingest_stock_data(symbols, country):
-    # Fetch stock data
     stock_data = get_stock_data(symbols, country)
     
-    # Create DataFrame
     df = pd.DataFrame(stock_data)
     print(df)
     
@@ -20,4 +18,4 @@ if __name__ == "__main__":
         "CSCO", "AMD", "BA", "IBM", "DIS", "PYPL", "MA", "V", "WMT", "KO"
     ]    
     country = "USA"
-    ingest_stock_data(symbols, country) 
+    ingest_stock_data(symbols, country)  

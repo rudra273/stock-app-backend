@@ -32,15 +32,6 @@ def connection(func):
                 print("Connection closed.")
     return wrapper
 
-@connection
-def create_schemas(connection, schema):
-    try:
-        cursor = connection.cursor()
-        cursor.execute(sql.SQL("CREATE SCHEMA IF NOT EXISTS {}").format(sql.Identifier(schema)))
-        connection.commit()
-        cursor.close()
-    except Exception as error:
-        print(f'Error creating schemas: {error}')
 
 @connection
 def dump_to_postgresql(connection, df, schema_name, table_name):
@@ -50,35 +41,6 @@ def dump_to_postgresql(connection, df, schema_name, table_name):
     except Exception as e:
         print(f"Error dumping data into {schema_name}.{table_name} table: {e}")
 
-@connection
-def get_tables_in_schema(connection, schema_name):
-    try:
-        cursor = connection.cursor()
-        cursor.execute(
-            sql.SQL("SELECT table_name FROM information_schema.tables WHERE table_schema = %s;"),
-            [schema_name]
-        )
-        tables = cursor.fetchall()
-        cursor.close()
-        return [table[0] for table in tables]
-    except Exception as error:
-        print(f'Error fetching tables in schema {schema_name}: {error}')
-        return []
-
-@connection
-def delete_table(connection, schema_name, table_name):
-    try:
-        cursor = connection.cursor()
-        cursor.execute(
-            sql.SQL("DROP TABLE IF EXISTS {}.{}").format(
-                sql.Identifier(schema_name),
-                sql.Identifier(table_name)
-            )
-        )
-        connection.commit()
-        cursor.close()
-    except Exception as error:
-        print(f'Error deleting table {schema_name}.{table_name}: {error}')
 
 @connection
 def fetch_data_from_pg(connection, schema_name, table_or_view_name, query, params):

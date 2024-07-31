@@ -23,6 +23,6 @@ class StockDataSerializer(serializers.Serializer):
 
 
 class HistoricalStockDataSerializer(serializers.Serializer):
-    Date = serializers.DateTimeField()  # Use DateTimeField to match the datetime format in your DataFrame
-    Close = serializers.FloatField()  # Match the Close field
+    Date = serializers.DateTimeField()  
+    Close = serializers.FloatField() 
 
