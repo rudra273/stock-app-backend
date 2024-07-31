@@ -63,7 +63,7 @@ class HistoricalStockDataAPIView(APIView):
         """
         
         df = fetch_data_from_pg(schema_name='public', table_or_view_name='historical_data', query=query, params=(symbol, start_date, end_date))
-        print(df)
+        # print(df)
         if df is not None:
             serializer = HistoricalStockDataSerializer(df.to_dict(orient='records'), many=True)
             return Response(serializer.data, status=status.HTTP_200_OK)
@@ -87,3 +87,5 @@ class StockDataDBAPIView(APIView):
             return Response(serializer.data, status=status.HTTP_200_OK)
         else:
             return Response({"error": "No data found."}, status=status.HTTP_404_NOT_FOUND) 
+        
+        

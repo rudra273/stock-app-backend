@@ -7,10 +7,22 @@ For more information on this file, see
 https://docs.djangoproject.com/en/5.0/howto/deployment/wsgi/
 """
 
+# import os
+
+# from django.core.wsgi import get_wsgi_application
+
+# os.environ.setdefault("DJANGO_SETTINGS_MODULE", "stock_backend.settings")
+
+# application = get_wsgi_application()
+
+
 import os
-
 from django.core.wsgi import get_wsgi_application
+from api.tasks import start_background_task
 
-os.environ.setdefault("DJANGO_SETTINGS_MODULE", "stock_backend.settings")
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'stock_backend.settings')
 
 application = get_wsgi_application()
+
+# Start the background task
+start_background_task()
