@@ -12,6 +12,8 @@ def ingest_stock_data(symbols, country):
     
     dump_to_postgresql(df, schema_name='public', table_name='stock_data')
 
+  
+
 if __name__ == "__main__":
     symbols = [
         "MSFT", "AAPL", "GOOGL", "AMZN", "TSLA", "META", "NVDA", "ADBE", "INTC", "NFLX",

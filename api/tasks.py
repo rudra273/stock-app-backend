@@ -3,7 +3,6 @@ import time
 import subprocess
 import os
 
-# Define the function that runs the script
 def run_ingest():
     while True:
         try:
@@ -13,7 +12,7 @@ def run_ingest():
         except subprocess.CalledProcessError as e:
             # Handle errors in script execution
             print(f"Error running ingest.py: {e}")
-        time.sleep(60)  # Wait for 60 seconds before running again
+        time.sleep(60)  
 
 
 def run_daily_task():

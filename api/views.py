@@ -6,22 +6,14 @@ from api.serializers import StockDataSerializer, HistoricalStockDataSerializer
 from services.postgres import fetch_data_from_pg, fetch_data_from_pg2, dump_to_postgresql
 from datetime import datetime, timedelta
 import pandas as pd
+from rest_framework.permissions import IsAuthenticated
+from rest_framework_simplejwt.authentication import JWTAuthentication
 
-def ingest():
-    symbols = [
-        "MSFT", "AAPL", "GOOGL", "AMZN", "TSLA", "META", "NVDA", "ADBE", "INTC", "NFLX",
-        "CSCO", "AMD", "BA", "IBM", "DIS", "PYPL", "MA", "V", "WMT", "KO"
-    ]    
-    country = "USA"
-    stock_data = get_stock_data(symbols, country)
-    
-    df = pd.DataFrame(stock_data)  
-    print(df) 
-
-    dump_to_postgresql(df, schema_name='public', table_name='stock_data')
 
 
 class StockDataAPIView(APIView):
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
     def get(self, request, *args, **kwargs):
         symbols = [
             "MSFT", "AAPL", "GOOGL", "AMZN", "TSLA", "META", "NVDA", "ADBE", "INTC", "NFLX",
@@ -35,6 +27,8 @@ class StockDataAPIView(APIView):
 
 
 class HistoricalStockDataAPIView(APIView):
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
     def get(self, request, *args, **kwargs):
         symbol = request.query_params.get('symbol')
         period = request.query_params.get('period', '1y')
@@ -73,6 +67,8 @@ class HistoricalStockDataAPIView(APIView):
 
 
 class StockDataDBAPIView(APIView):
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
     def get(self, request, *args, **kwargs):
         query = """
         SELECT *
@@ -87,5 +83,4 @@ class StockDataDBAPIView(APIView):
             return Response(serializer.data, status=status.HTTP_200_OK)
         else:
             return Response({"error": "No data found."}, status=status.HTTP_404_NOT_FOUND) 
-        
         
